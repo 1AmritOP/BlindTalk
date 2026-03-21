@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import VideoRoom from "@/components/VideoRoom";
 
 const socket = io(process.env.NEXT_PUBLIC_URL!, {
-  transports: ["websocket"],
+  transports: ["websocket","polling"],
 });
 export default function Home() {
   const [status, setStatus] = useState("idle");
