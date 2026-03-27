@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import VideoRoom from "@/components/VideoRoom";
 
 const socket = io(process.env.NEXT_PUBLIC_URL!, {
-  transports: ["websocket","polling"],
+  transports: ["websocket", "polling"],
 });
 export default function Home() {
   const [status, setStatus] = useState("idle");
@@ -25,13 +25,16 @@ export default function Home() {
       setStatus("chatting");
     });
 
-    socket.on("waiting",()=>{
+    socket.on("waiting", () => {
       setStatus("waiting");
-    })
+    });
 
-    socket.on("partner_left",()=>{
-      window.location.reload();
-    })
+    socket.on("partner_left", () => {
+      // window.location.reload();
+      setRoomId("");
+      setStatus("waiting");
+      socket.emit("start");
+    });
 
     return () => {
       socket.off();
@@ -40,7 +43,10 @@ export default function Home() {
 
   function next() {
     socket.emit("next");
-    window.location.reload();
+    // window.location.reload();
+    setRoomId("");
+      setStatus("waiting");
+      socket.emit("start");
   }
 
   return (
@@ -117,8 +123,9 @@ export default function Home() {
                   Incognito | connected
                 </div>
                 <motion.button
-                onClick={next}
-                className="flex items-center gap-2 bg-red-500 rounded-2xl px-3 py-1 font-semibold text-lg">
+                  onClick={next}
+                  className="flex items-center gap-2 bg-red-500 rounded-2xl px-3 py-1 font-semibold text-lg"
+                >
                   <Shuffle size={16} />
                   Next
                 </motion.button>
